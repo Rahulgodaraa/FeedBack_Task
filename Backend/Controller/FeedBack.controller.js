@@ -1,5 +1,6 @@
 import Feedback from "../Model/Feedback.Schema.js";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 // Add Feedback
 export const addFeedback = async (req, res) => {
@@ -24,20 +25,31 @@ export const addFeedback = async (req, res) => {
 export const getUserFeedback = async (req, res) => {
   try {
     const { userId } = req.params;
+    
+    console.log('Received userId:', userId); // Debug log
 
-    if (!userId) {
-      return res.status(400).json({ message: "User ID is required", success: false });
-    }
+    // Get feedbacks for this user without mongoose validation
+    const feedbacks = await Feedback.find({ userId })
+      .populate('userId', 'name email')  // Populate user details
+      .sort({ createdAt: -1 });         // Sort by newest first
+    
+    console.log('Found feedbacks:', feedbacks); // Debug log
 
-    const feedbacks = await Feedback.find({ userId });
+    // Send response even if no feedbacks found
+    return res.status(200).json({
+      message: feedbacks.length ? "User feedbacks retrieved successfully" : "No feedbacks found",
+      success: true,
+      feedbacks
+    });
 
-    res.status(200).json({ message: "Feedback retrieved successfully", success: true, feedbacks });
   } catch (error) {
-    console.error("Error fetching feedback:", error.message);
-    res.status(500).json({ message: "Internal server error", success: false });
+    console.error("Error fetching user feedback:", error.message);
+    return res.status(500).json({ 
+      message: "Internal server error", 
+      success: false 
+    });
   }
 };
-
 // Update Feedback
 export const updateFeedback = async (req, res) => {
   try {
@@ -89,29 +101,40 @@ export const deleteFeedback = async (req, res) => {
  
 
 // Get all feedbacks for admin
+// feedback.controller.js
 export const getAllFeedbacks = async (req, res) => {
   try {
-    // Just a simple check for role (optional if you want it later)
+    // Role check
     if (req.user && req.user.role !== 'admin') {
       return res.status(403).json({ message: "Access denied", success: false });
     }
     
-    // Fetch all feedbacks from the database
-    const feedbacks = await Feedback.find().populate('userId', 'name email');
+    // Fetch all feedbacks using an empty query {}
+    const feedbacks = await Feedback.find({})
+      .populate({
+        path: 'userId',
+        select: 'name email' // Only get name and email from User
+      });
     
-    // If no feedback found
     if (!feedbacks.length) {
-      return res.status(404).json({ message: "No feedbacks found", success: false });
+      return res.status(404).json({ 
+        message: "No feedbacks found", 
+        success: false 
+      });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "All feedbacks retrieved successfully",
       success: true,
       feedbacks
     });
+    
   } catch (error) {
     console.error("Error fetching feedbacks:", error.message);
-    res.status(500).json({ message: "Internal server error", success: false });
+    return res.status(500).json({ 
+      message: "Internal server error", 
+      success: false 
+    });
   }
 };
 

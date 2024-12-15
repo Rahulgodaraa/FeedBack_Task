@@ -1,17 +1,17 @@
-import User from '../Model/User.Schema.js';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import User from "../Model/User.Schema.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 // Login controller
 export const Login = async (req, res) => {
   try {
-    const { email, password } = req.body.userData;
+    const { email, password } = req.body;
 
     // Validation
     if (!email || !password) {
       return res.status(400).json({
         message: "All fields are required",
-        success: false
+        success: false,
       });
     }
 
@@ -20,7 +20,7 @@ export const Login = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         message: "User does not exist",
-        success: false
+        success: false,
       });
     }
 
@@ -29,7 +29,7 @@ export const Login = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         message: "Invalid credentials",
-        success: false
+        success: false,
       });
     }
 
@@ -37,14 +37,14 @@ export const Login = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: "24h" }
     );
 
     // Set cookie
-    res.cookie('token', token, {
+    res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
     // Send response
@@ -52,16 +52,18 @@ export const Login = async (req, res) => {
       message: "Login successful",
       success: true,
       userData: {
+        _id: user._id, // Make sure this is included
         email: user.email,
         name: user.name,
-        role: user.role
-      }
+        role: user.role,
+      },
+      token: token
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     res.status(500).json({
       message: "Internal server error",
-      success: false
+      success: false,
     });
   }
 };
@@ -75,14 +77,14 @@ export const Register = async (req, res) => {
     if (!name || !email || !password || !confirmPassword) {
       return res.status(400).json({
         message: "All fields are required",
-        success: false
+        success: false,
       });
     }
 
     if (password !== confirmPassword) {
       return res.status(400).json({
         message: "Passwords do not match",
-        success: false
+        success: false,
       });
     }
 
@@ -91,7 +93,7 @@ export const Register = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({
         message: "Email already exists",
-        success: false
+        success: false,
       });
     }
 
@@ -102,29 +104,29 @@ export const Register = async (req, res) => {
     const user = new User({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     await user.save();
 
     res.status(201).json({
       message: "Registration successful",
-      success: true
+      success: true,
     });
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error("Registration error:", error);
     res.status(500).json({
       message: "Internal server error",
-      success: false
+      success: false,
     });
   }
 };
 
 // Logout controller
 export const logout = (req, res) => {
-  res.clearCookie('token');
+  res.clearCookie("token");
   res.json({
     message: "Logout successful",
-    success: true
+    success: true,
   });
 };

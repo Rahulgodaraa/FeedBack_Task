@@ -3,9 +3,10 @@ import mongoose from "mongoose";
 import cors from "cors";
 import allRoutes from "./Routes/All.Routes.js";
 import cookieParser from "cookie-parser";
-
+import dotenv from "dotenv"
 const app = express();
 
+dotenv.config();
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
@@ -32,18 +33,18 @@ app.listen(8000, () => {
   console.log("Server Running on Port 8000...");
 });
 
-const fun1 = () =>{
-  console.log("fun1");
+// const fun1 = () =>{
+//   console.log("fun1");
   
-}
+// }
 
-function listen2(fun1) {
-  fun1();
-  //console.log("listen2 func");
+// function listen2(fun1) {
+//   fun1();
+//   //console.log("listen2 func");
   
-}
+// }
 
- listen2(fun1);
+//  listen2(fun1);
 
 //console.log(res);
 

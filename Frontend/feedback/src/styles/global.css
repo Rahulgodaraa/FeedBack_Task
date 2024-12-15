@@ -1,0 +1,720 @@
+ 
+ /* Add these to your global.css file */
+
+
+ /* Container styles */
+.feedback-list-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  .feedback-list-container h2 {
+    font-size: 24px;
+    margin-bottom: 16px;
+    color: #333;
+  }
+  
+  /* Loading and error messages */
+  .feedback-loading,
+  .feedback-error {
+    font-size: 18px;
+    text-align: center;
+    color: #666;
+    margin-top: 20px;
+  }
+  
+  /* Feedback grid */
+  .feedback-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  /* Feedback card */
+  .feedback-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    padding: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  .feedback-card:hover {
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Edit mode */
+  .edit-mode {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .feedback-textarea {
+    width: 100%;
+    height: 80px;
+    resize: none;
+    margin-bottom: 8px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .feedback-rating-select {
+    margin-bottom: 12px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  /* Edit actions */
+  .edit-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .btn-save {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-save:hover {
+    background-color: #218838;
+  }
+  
+  .btn-cancel {
+    background-color: #ffc107;
+    color: #333;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #e0a800;
+  }
+  
+  /* View mode */
+  .view-mode {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .feedback-content {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+  
+  .feedback-meta {
+    font-size: 12px;
+    color: #777;
+  }
+  
+  .feedback-meta span {
+    display: block;
+    margin-bottom: 4px;
+  }
+  
+  .feedback-user {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Feedback actions */
+  .feedback-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  
+  /* Action buttons */
+  .btn-edit,
+  .btn-delete {
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-edit {
+    background-color: #007bff;
+  }
+  
+  .btn-edit:hover {
+    background-color: #0056b3;
+  }
+  
+  .btn-delete {
+    background-color: #dc3545;
+  }
+  
+  .btn-delete:hover {
+    background-color: #c82333;
+  }
+  
+
+/* Register & Login Common Styles */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f4f6;
+    padding: 20px;
+  }
+  
+  .auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    padding: 32px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .auth-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+  }
+  
+  .form-input,
+  .form-select {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    width: 100%;
+    transition: all 0.2s;
+  }
+  
+  .form-input:focus,
+  .form-select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+  }
+  
+  .submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .submit-btn:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .auth-link {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .text-link {
+    color: #2563eb;
+    text-decoration: none;
+    cursor: pointer;
+    margin-left: 4px;
+  }
+  
+  .text-link:hover {
+    text-decoration: underline;
+  }
+  
+  .error-message {
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #dc2626;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+  padding: 12px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  border: 1px solid #ef4444;
+  color: #dc2626;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.submit-button {
+  padding: 10px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #1d4ed8;
+}
+
+.submit-button:disabled,
+.submit-button.loading {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.register-link {
+  text-align: center;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+ 
+
+ 
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+  padding: 12px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  border: 1px solid #ef4444;
+  color: #dc2626;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.submit-button {
+  padding: 10px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #1d4ed8;
+}
+
+.submit-button:disabled,
+.submit-button.loading {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.register-link {
+  text-align: center;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+ /* Admin Dashboard */
+.admin-dashboard {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .dashboard-title {
+    font-size: 28px;
+    color: #1a1a1a;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  
+  .feedback-section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .feedback-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .feedback-table th,
+  .feedback-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .feedback-table th {
+    background-color: #f9fafb;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  /* Feedback Form Styles */
+.feedback-form-container {
+    min-height: 40vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px;
+    background-color: #f3f4f6;
+  }
+  
+  .feedback-form-card {
+    width: 100%;
+    max-width: 600px;
+    background: white;
+    padding: 32px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  
+  .feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .form-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    min-height: 120px;
+    font-size: 14px;
+    resize: vertical;
+  }
+  
+  .form-textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+  }
+  
+  .success-message {
+    background-color: #dcfce7;
+    border: 1px solid #86efac;
+    color: #15803d;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+  
+  /* Reusing submit-btn from auth styles */
+  .submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .submit-btn:hover {
+    background-color: #1d4ed8;
+  }
+
+  .feedback-item {
+    border: 1px solid #ddd;
+    padding: 16px;
+    margin: 16px 0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .feedback-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .feedback-rating .star {
+    font-size: 18px;
+    color: #ccc;
+    margin-right: 4px;
+  }
+  
+  .feedback-rating .star.filled {
+    color: #f5a623;
+  }
+  
+  .feedback-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+ /* General button styles */
+.btn-edit, .btn-delete, .btn-toggle-content, .btn-view {
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Edit button with a greenish-yellow shade */
+  .btn-edit {
+    background-color: #28a745; /* Green */
+  }
+  
+  .btn-edit:hover {
+    background-color: #218838;
+  }
+  
+  /* Delete button with a deeper red for emphasis */
+  .btn-delete {
+    background-color: #e63946; /* Deep red */
+  }
+  
+  .btn-delete:hover {
+    background-color: #c5303b;
+  }
+  
+  /* Toggle content button with a neutral blue */
+  .btn-toggle-content {
+    background-color: #6c757d; /* Neutral gray-blue */
+  }
+  
+  .btn-toggle-content:hover {
+    background-color: #5a6268;
+  }
+  
+  /* View button with a rich blue shade */
+  .btn-view {
+    background-color: #007bff; /* Rich blue */
+  }
+  
+  .btn-view:hover {
+    background-color: #0056b3;
+  }
+  
+  
+  .feedback-content {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  
+  .feedback-meta {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .feedback-date {
+    font-style: italic;
+  }
+  

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../../styles/global.css'; // Import the CSS file here
 
 const FeedbackItem = ({ 
   feedback, 

@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 
 const feedbackSchema = new mongoose.Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User", // Reference to the User model
       required: true,
     },
@@ -24,6 +24,6 @@ const feedbackSchema = new mongoose.Schema(
   }
 );
 
-const Feedback = mongoose.model("Feedback", feedbackSchema);
+const Feedback = model("Feedback", feedbackSchema);
 
 export default Feedback;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { FeedbackContext } from "../../context/FeedbackContext";
 import { AuthContext } from "../../context/AuthContext";
+import "../../styles/global.css"
 
 const AdminDashboard = () => {
   const { getAllFeedbacks, feedbacks, deleteFeedback, updateFeedback } = useContext(FeedbackContext);
@@ -50,17 +51,16 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="admin-dashboard" style={styles.dashboardContainer}>
-      <h1 style={styles.heading}>Admin Dashboard</h1>
+    <div className="admin-dashboard">
+      <h1 className="dashboard-title">Admin Dashboard</h1>
 
-      <div style={styles.filterSection}>
-        <div style={styles.filterGroup}>
+      <div className="filter-container">
+        <div className="filter-group">
           <label>Minimum Rating</label>
           <select
             name="minRating"
             value={filter.minRating}
             onChange={handleFilterChange}
-            style={styles.select}
           >
             {[0, 1, 2, 3, 4, 5].map((num) => (
               <option key={num} value={num}>
@@ -69,7 +69,7 @@ const AdminDashboard = () => {
             ))}
           </select>
         </div>
-        <div style={styles.filterGroup}>
+        <div className="filter-group">
           <label>Search</label>
           <input
             type="text"
@@ -77,17 +77,16 @@ const AdminDashboard = () => {
             value={filter.searchTerm}
             onChange={handleFilterChange}
             placeholder="Search feedback content"
-            style={styles.input}
           />
         </div>
       </div>
 
-      <div style={styles.feedbackManagement}>
-        <h2>All Feedbacks</h2>
+      <div className="feedback-section">
+        <h2 className="section-title">All Feedbacks</h2>
         {filteredFeedbacks.length === 0 ? (
-          <p>No feedbacks found</p>
+          <p className="no-feedback">No feedbacks found</p>
         ) : (
-          <table style={styles.table}>
+          <table className="feedback-table">
             <thead>
               <tr>
                 <th>Feedback</th>
@@ -104,7 +103,7 @@ const AdminDashboard = () => {
                         name="content"
                         value={editingFeedback.content}
                         onChange={handleEditChange}
-                        style={styles.textarea}
+                        className="edit-textarea"
                       />
                     ) : (
                       feedback.content
@@ -116,7 +115,7 @@ const AdminDashboard = () => {
                         name="rating"
                         value={editingFeedback.rating}
                         onChange={handleEditChange}
-                        style={styles.select}
+                        className="edit-select"
                       >
                         {[1, 2, 3, 4, 5].map((num) => (
                           <option key={num} value={num}>
@@ -128,26 +127,26 @@ const AdminDashboard = () => {
                       `${feedback.rating}/5`
                     )}
                   </td>
-                  <td>
+                  <td className="action-buttons">
                     {editingFeedback && editingFeedback._id === feedback._id ? (
-                      <button onClick={submitEdit} style={styles.saveButton}>Save</button>
+                      <button onClick={submitEdit} className="btn save">Save</button>
                     ) : (
                       <button
                         onClick={() => setEditingFeedback(feedback)}
-                        style={styles.editButton}
+                        className="btn-edit"
                       >
                         Edit
                       </button>
                     )}
                     <button
                       onClick={() => handleDelete(feedback._id)}
-                      style={styles.deleteButton}
+                      className="btn-delete"
                     >
                       Delete
                     </button>
                     <button
                       onClick={() => setViewingFeedback(feedback)}
-                      style={styles.viewButton}
+                      className="btn-view"
                     >
                       View
                     </button>
@@ -160,14 +159,14 @@ const AdminDashboard = () => {
       </div>
 
       {viewingFeedback && (
-        <div style={styles.modal}>
-          <div style={styles.modalContent}>
-            <h3>Feedback Details</h3>
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3 className="modal-title">Feedback Details</h3>
             <p><strong>Content:</strong> {viewingFeedback.content}</p>
             <p><strong>Rating:</strong> {viewingFeedback.rating}/5</p>
             <button
               onClick={() => setViewingFeedback(null)}
-              style={styles.closeButton}
+              className="btn close"
             >
               Close
             </button>
@@ -178,99 +177,8 @@ const AdminDashboard = () => {
   );
 };
 
-const styles = {
-  dashboardContainer: {
-    padding: "20px",
-    fontFamily: "Arial, sans-serif",
-  },
-  heading: {
-    textAlign: "center",
-  },
-  filterSection: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "20px",
-  },
-  filterGroup: {
-    display: "flex",
-    flexDirection: "column",
-    marginRight: "10px",
-  },
-  input: {
-    padding: "8px",
-    fontSize: "14px",
-  },
-  select: {
-    padding: "8px",
-    fontSize: "14px",
-  },
-  feedbackManagement: {
-    marginTop: "20px",
-  },
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-  },
-  textarea: {
-    width: "100%",
-    padding: "8px",
-  },
-  editButton: {
-    backgroundColor: "#007BFF",
-    color: "white",
-    border: "none",
-    padding: "8px 12px",
-    cursor: "pointer",
-    marginRight: "5px",
-  },
-  saveButton: {
-    backgroundColor: "#28A745",
-    color: "white",
-    border: "none",
-    padding: "8px 12px",
-    cursor: "pointer",
-    marginRight: "5px",
-  },
-  deleteButton: {
-    backgroundColor: "#DC3545",
-    color: "white",
-    border: "none",
-    padding: "8px 12px",
-    cursor: "pointer",
-    marginRight: "5px",
-  },
-  viewButton: {
-    backgroundColor: "#6C757D",
-    color: "white",
-    border: "none",
-    padding: "8px 12px",
-    cursor: "pointer",
-  },
-  modal: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0,0,0,0.5)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: "20px",
-    borderRadius: "5px",
-    width: "400px",
-    textAlign: "center",
-  },
-  closeButton: {
-    backgroundColor: "#007BFF",
-    color: "white",
-    border: "none",
-    padding: "10px 20px",
-    cursor: "pointer",
-  },
-};
+
 
 export default AdminDashboard;
+
+ 

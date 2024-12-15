@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-
+import React, { useState, useContext } from 'react';
+import { FeedbackContext } from '../../context/FeedbackContext';
+import { AuthContext } from '../../context/AuthContext';
+import "../../styles/global.css"
 const FeedbackForm = () => {
   const [feedback, setFeedback] = useState({
     content: '',
@@ -8,28 +10,14 @@ const FeedbackForm = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Mock user data for demonstration
-  const mockUser = {
-    _id: '123',
-    name: 'John Doe'
-  };
-
-  // Mock feedback submission function
-  const addFeedback = async (feedbackData) => {
-    // Simulate API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log('Submitted feedback:', feedbackData);
-        resolve({ success: true });
-      }, 500);
-    });
-  };
+  const { user } = useContext(AuthContext);
+  const { addFeedback } = useContext(FeedbackContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFeedback(prev => ({
       ...prev,
-      [name]: value
+      [name]: name === 'rating' ? parseInt(value, 10) : value
     }));
   };
 
@@ -37,7 +25,7 @@ const FeedbackForm = () => {
     e.preventDefault();
     try {
       const response = await addFeedback({
-        userId: mockUser._id,
+        userId: user._id,
         ...feedback
       });
 
@@ -47,68 +35,67 @@ const FeedbackForm = () => {
         setError('');
       }
     } catch (err) {
+      console.error('Feedback submission error:', err);
       setError(err.message || 'Failed to submit feedback');
       setSuccess('');
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">Submit Feedback</h2>
-      
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
-        </div>
-      )}
-      
-      {success && (
-        <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-          {success}
-        </div>
-      )}
-      
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Feedback
-          </label>
-          <textarea
-            name="content"
-            value={feedback.content}
-            onChange={handleChange}
-            placeholder="Share your thoughts..."
-            required
-            rows="4"
-            className="w-full p-3 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
+    <div className="feedback-form-container">
+      <div className="feedback-form-card">
+        <h2 className="form-title">Submit Feedback</h2>
         
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Rating
-          </label>
-          <select
-            name="rating"
-            value={feedback.rating}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
+        
+        {success && (
+          <div className="success-message">
+            {success}
+          </div>
+        )}
+        
+        <form onSubmit={handleSubmit} className="feedback-form">
+          <div className="form-group">
+            <label>Your Feedback</label>
+            <textarea
+              name="content"
+              value={feedback.content}
+              onChange={handleChange}
+              placeholder="Share your thoughts..."
+              required
+              rows="4"
+              className="form-textarea"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>Rating</label>
+            <select
+              name="rating"
+              value={feedback.rating}
+              onChange={handleChange}
+              className="form-select"
+            >
+              {[1, 2, 3, 4, 5].map(num => (
+                <option key={num} value={num}>
+                  {num} Star{num !== 1 ? 's' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <button
+            type="submit"
+            className="submit-btn"
           >
-            {[1, 2, 3, 4, 5].map(num => (
-              <option key={num} value={num}>
-                {num} Star{num !== 1 ? 's' : ''}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        <button
-          type="submit"
-          className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          Submit Feedback
-        </button>
-      </form>
+            Submit Feedback
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

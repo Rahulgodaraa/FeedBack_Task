@@ -9,19 +9,13 @@ import {
 
 const FeedBack = Router();
 
- 
+// More specific routes first
+FeedBack.get("/all", getAllFeedbacks); 
 FeedBack.post("/add", addFeedback);
-
- 
-FeedBack.get("/:userId", getUserFeedback);
-
- 
 FeedBack.put("/update", updateFeedback);
-
- 
 FeedBack.delete("/:feedbackId", deleteFeedback);
 
-FeedBack.get("/all", getAllFeedbacks);
-
+// Parameter route last
+FeedBack.get("/:userId", getUserFeedback);
 
 export default FeedBack;

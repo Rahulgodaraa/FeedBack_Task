@@ -1,10 +1,10 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useCallback, useReducer } from 'react';
 import { feedbackService } from '../services/feedbackService';
 
 // Initial state
 const initialState = {
   feedbacks: [],
-  loading: true,
+  loading: false,
   error: null
 };
 
@@ -14,30 +14,43 @@ export const FeedbackContext = createContext(initialState);
 // Reducer
 const feedbackReducer = (state, action) => {
   switch (action.type) {
-    case 'GET_FEEDBACKS':
-      return {
-        ...state,
-        feedbacks: action.payload,
-        loading: false
-      };
-    case 'ADD_FEEDBACK':
-      return {
-        ...state,
-        feedbacks: [...state.feedbacks, action.payload]
-      };
+    case 'SET_LOADING':
+        return {
+          ...state,
+          loading: true,
+          error: null
+        };
+      case 'GET_FEEDBACKS':
+        return {
+          ...state,
+          feedbacks: action.payload,
+          loading: false,
+          error: null
+        };
+      case 'ADD_FEEDBACK':
+        return {
+          ...state,
+          feedbacks: [...state.feedbacks, action.payload],
+          loading: false,
+          error: null
+        };
     case 'UPDATE_FEEDBACK':
       return {
         ...state,
-        feedbacks: state.feedbacks.map(feedback => 
+        feedbacks: state.feedbacks.map(feedback =>
           feedback._id === action.payload._id ? action.payload : feedback
-        )
+        ),
+        loading: false,
+        error: null
       };
     case 'DELETE_FEEDBACK':
       return {
         ...state,
         feedbacks: state.feedbacks.filter(
           feedback => feedback._id !== action.payload
-        )
+        ),
+        loading: false,
+        error: null
       };
     case 'FEEDBACK_ERROR':
       return {
@@ -54,13 +67,13 @@ const feedbackReducer = (state, action) => {
 export const FeedbackProvider = ({ children }) => {
   const [state, dispatch] = useReducer(feedbackReducer, initialState);
 
-  // Get all feedbacks (add this route in your backend if it's not present)
-  const getAllFeedbacks = async () => {
+  const getAllFeedbacks = useCallback(async () => {
     try {
-      const feedbacks = await feedbackService.getAllFeedbacks();
+      dispatch({ type: 'SET_LOADING' });
+      const response = await feedbackService.getAllFeedbacks();
       dispatch({
         type: 'GET_FEEDBACKS',
-        payload: feedbacks
+        payload: response
       });
     } catch (error) {
       dispatch({
@@ -68,19 +81,15 @@ export const FeedbackProvider = ({ children }) => {
         payload: error.message
       });
     }
-  };
+  }, []);
 
-
- 
-
-
-  // Get user's feedbacks
-   const getUserFeedbacks = async (userId) => {
+  const getUserFeedbacks = useCallback(async (userId) => {
     try {
-      const feedbacks = await feedbackService.getUserFeedback(userId);
+      dispatch({ type: 'SET_LOADING' });
+      const response = await feedbackService.getUserFeedback(userId);
       dispatch({
         type: 'GET_FEEDBACKS',
-        payload: feedbacks
+        payload: response
       });
     } catch (error) {
       dispatch({
@@ -88,18 +97,32 @@ export const FeedbackProvider = ({ children }) => {
         payload: error.message
       });
     }
-  };
-
+  }, []);
   // Add feedback
   const addFeedback = async (feedbackData) => {
     try {
-      const newFeedback = await feedbackService.addFeedback(feedbackData);
-      dispatch({
-        type: 'ADD_FEEDBACK',
-        payload: newFeedback
-      });
-      return newFeedback;
+      dispatch({ type: 'SET_LOADING' });
+      const response = await feedbackService.addFeedback(feedbackData);
+      console.log('Add feedback response:', response); // Debug log
+
+      if (response.success) {
+        dispatch({
+          type: 'ADD_FEEDBACK',
+          payload: response.feedback  // Make sure this matches your API response
+        });
+
+        // Refresh the feedbacks list after adding
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user.role === 'admin') {
+          await getAllFeedbacks();
+        } else {
+          await getUserFeedbacks(user._id);
+        }
+
+        return response.feedback;
+      }
     } catch (error) {
+      console.error('Error adding feedback:', error);
       dispatch({
         type: 'FEEDBACK_ERROR',
         payload: error.message
@@ -111,15 +134,16 @@ export const FeedbackProvider = ({ children }) => {
   // Update feedback
   const updateFeedback = async (feedbackData) => {
     try {
-      const updatedFeedback = await feedbackService.updateFeedback(
-        feedbackData._id, 
+      dispatch({ type: 'SET_LOADING' });
+      const response = await feedbackService.updateFeedback(
+        feedbackData._id,
         feedbackData
       );
       dispatch({
         type: 'UPDATE_FEEDBACK',
-        payload: updatedFeedback
+        payload: response
       });
-      return updatedFeedback;
+      return response;
     } catch (error) {
       dispatch({
         type: 'FEEDBACK_ERROR',
@@ -132,6 +156,7 @@ export const FeedbackProvider = ({ children }) => {
   // Delete feedback
   const deleteFeedback = async (feedbackId) => {
     try {
+      dispatch({ type: 'SET_LOADING' });
       await feedbackService.deleteFeedback(feedbackId);
       dispatch({
         type: 'DELETE_FEEDBACK',
@@ -146,6 +171,7 @@ export const FeedbackProvider = ({ children }) => {
     }
   };
 
+ 
   return (
     <FeedbackContext.Provider
       value={{

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { FeedbackContext } from '../../context/FeedbackContext';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -7,28 +7,44 @@ const FeedbackList = () => {
   const { user } = useContext(AuthContext);
   const { 
     getUserFeedbacks, 
+    getAllFeedbacks,
     updateFeedback, 
     deleteFeedback,
-    getAllFeedbacks,
-    feedbacks 
+    feedbacks,
+    loading,
+    error 
   } = useContext(FeedbackContext);
 
+  const fetchedRef = useRef(false);
+
   useEffect(() => {
-    if (user) {
-      if (user.role === 'admin') {
-        // Only call the admin fetch if necessary
-        if (!feedbacks.length) {
-          getAllFeedbacks();
-        }
-      } else if (user._id) {
-        // Only fetch user's feedback if not already fetched
-        if (!feedbacks.length) {
-          getUserFeedbacks(user._id);
+    const fetchFeedbacks = async () => {
+      if (!fetchedRef.current && user) {
+        try {
+          if (user.role === 'admin') {
+            await getAllFeedbacks();
+          } else {
+            const storedUser = JSON.parse(localStorage.getItem('user'));
+            const userId = user._id || storedUser?._id;
+            
+            if (userId) {
+              await getUserFeedbacks(userId);
+            }
+          }
+          fetchedRef.current = true;
+        } catch (error) {
+          console.error('Error fetching feedbacks:', error);
         }
       }
-    }
-  }, [user, feedbacks, getAllFeedbacks, getUserFeedbacks]);
-  
+    };
+
+    fetchFeedbacks();
+    
+    // Cleanup function to reset the ref when component unmounts
+    return () => {
+      fetchedRef.current = false;
+    };
+  }, [user]);
 
   const handleEdit = (feedback) => {
     setEditingFeedback({ ...feedback });
@@ -36,9 +52,9 @@ const FeedbackList = () => {
 
   const handleUpdateChange = (e) => {
     const { name, value } = e.target;
-    setEditingFeedback((prev) => ({
+    setEditingFeedback(prev => ({
       ...prev,
-      [name]: value,
+      [name]: name === 'rating' ? parseInt(value, 10) : value
     }));
   };
 
@@ -46,26 +62,43 @@ const FeedbackList = () => {
     try {
       await updateFeedback(editingFeedback);
       setEditingFeedback(null);
+      // Refresh feedbacks
+      if (user.role === 'admin') {
+        await getAllFeedbacks();
+      } else {
+        await getUserFeedbacks(user._id);
+      }
     } catch (error) {
-      console.error('Update failed', error);
+      console.error('Update failed:', error);
     }
   };
 
   const handleDelete = async (feedbackId) => {
-    try {
-      await deleteFeedback(feedbackId);
-    } catch (error) {
-      console.error('Delete failed', error);
+    if (window.confirm('Are you sure you want to delete this feedback?')) {
+      try {
+        await deleteFeedback(feedbackId);
+        // Refresh feedbacks
+        if (user.role === 'admin') {
+          await getAllFeedbacks();
+        } else {
+          await getUserFeedbacks(user._id);
+        }
+      } catch (error) {
+        console.error('Delete failed:', error);
+      }
     }
   };
 
+  if (loading) return <div className="feedback-loading">Loading...</div>;
+  if (error) return <div className="feedback-error">Error: {error}</div>;
+
   return (
     <div className="feedback-list-container">
-      <h2>My Feedbacks</h2>
+      <h2>{user?.role === 'admin' ? 'All Feedbacks' : 'My Feedbacks'}</h2>
       {!user || !user._id ? (
-        <p>Please login as a user to view feedbacks.</p>
+        <p>Please login to view feedbacks.</p>
       ) : feedbacks.length === 0 ? (
-        <p>No feedbacks submitted yet</p>
+        <p>No feedbacks found.</p>
       ) : (
         <div className="feedback-grid">
           {feedbacks.map((feedback) => (
@@ -76,11 +109,13 @@ const FeedbackList = () => {
                     name="content"
                     value={editingFeedback.content}
                     onChange={handleUpdateChange}
+                    className="feedback-textarea"
                   />
                   <select
                     name="rating"
                     value={editingFeedback.rating}
                     onChange={handleUpdateChange}
+                    className="feedback-rating-select"
                   >
                     {[1, 2, 3, 4, 5].map((num) => (
                       <option key={num} value={num}>
@@ -89,18 +124,43 @@ const FeedbackList = () => {
                     ))}
                   </select>
                   <div className="edit-actions">
-                    <button onClick={submitUpdate}>Save</button>
-                    <button onClick={() => setEditingFeedback(null)}>Cancel</button>
+                    <button 
+                      onClick={submitUpdate}
+                      className="btn-save"
+                    >
+                      Save
+                    </button>
+                    <button 
+                      onClick={() => setEditingFeedback(null)}
+                      className="btn-cancel"
+                    >
+                      Cancel
+                    </button>
                   </div>
                 </div>
               ) : (
                 <div className="view-mode">
-                  <p>{feedback.content}</p>
+                  <p className="feedback-content">{feedback.content}</p>
                   <div className="feedback-meta">
                     <span>Rating: {feedback.rating}/5</span>
+                    {user.role === 'admin' && (
+                      <span className="feedback-user">
+                        By: {feedback.userId.name || 'Unknown user'}
+                      </span>
+                    )}
                     <div className="feedback-actions">
-                      <button onClick={() => handleEdit(feedback)}>Edit</button>
-                      <button onClick={() => handleDelete(feedback._id)}>Delete</button>
+                      <button 
+                        onClick={() => handleEdit(feedback)}
+                        className="btn-edit"
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(feedback._id)}
+                        className="btn-delete"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 </div>
