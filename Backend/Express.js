@@ -13,7 +13,7 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 mongoose
   .connect(
-    "mongodb+srv://noobproffessor:lAdQstm6Jlm9cfwg@cluster0.tumzn.mongodb.net/Jforce"
+    process.env.MONGODB_URI
   )
   .then(() => {
     console.log("DB Connected");
@@ -29,8 +29,8 @@ app.get("/", (req, res) => {
   }
 });
 
-app.listen(8000, () => {
-  console.log("Server Running on Port 8000...");
+app.listen(process.env.PORT, () => {
+  console.log("Server Running on Port..." , process.env.PORT);
 });
 
 // const fun1 = () =>{

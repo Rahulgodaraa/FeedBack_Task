@@ -15,12 +15,12 @@ export const authService = {
   // Login service
   login: async (userData) => {
     try {
-      console.log('Login attempt with:', userData);  // Debug log
+      console.log('Login attempt with:', userData);   
       const response = await axios.post(`${API_URL}/Login`, userData);
-      console.log('Raw login response:', response.data);  // Debug log
+      console.log('Raw login response:', response.data);  
   
       if (response.data.success) {
-        // Make sure these fields exist in your response
+         
         const { token, userData } = response.data;
         
         // Store in localStorage

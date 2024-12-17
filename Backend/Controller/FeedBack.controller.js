@@ -1,6 +1,5 @@
 import Feedback from "../Model/Feedback.Schema.js";
-import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
+ 
 
 // Add Feedback
 export const addFeedback = async (req, res) => {
@@ -28,7 +27,7 @@ export const getUserFeedback = async (req, res) => {
     
     console.log('Received userId:', userId); // Debug log
 
-    // Get feedbacks for this user without mongoose validation
+     
     const feedbacks = await Feedback.find({ userId })
       .populate('userId', 'name email')  // Populate user details
       .sort({ createdAt: -1 });         // Sort by newest first
